@@ -51,7 +51,7 @@ public class AutomatenSteuerung implements KaffeeAutomat {
 
 	@Override
 	public float zapfeProdukt() {
-		if(auswahl.preis <= geld){
+		if (auswahl.preis <= geld) {
 			Protokoll p = Protokoll.getInstance();
 			p.notiere(auswahl);
 			geld = geld - auswahl.preis;
@@ -61,15 +61,15 @@ public class AutomatenSteuerung implements KaffeeAutomat {
 		return fordereWechselgeld();
 	}
 
-	float getUmsatz(){
+	float getUmsatz() {
 		return Protokoll.getInstance().umsatz;
 	}
 
-	public String[] listeVerkäufe(){
+	public String[] listeVerkäufe() {
 		LinkedList<Protokoll.VerkaufsEreignis> prot = Protokoll.getInstance().protokollListe;
 		String[] s = new String[prot.size()];
+		int i = 0;
 		for (Protokoll.VerkaufsEreignis vE : prot) {
-			int i = 0;
 			s[i++] = vE.produktbezeichnung + " (" + vE.verkaufspreis + "EURO) um: " + vE.datum;
 		}
 		System.out.println("Liste: " + s.length);
@@ -79,17 +79,34 @@ public class AutomatenSteuerung implements KaffeeAutomat {
 	@Override
 	public float abbruch() {
 		auswahl = null;
-		float temp = geld;
-		geld = 0;
-		return temp;
+		return fordereWechselgeld();
 	}
 
-	public void testKonfiguration(){
+	public void testKonfiguration() {
 		LinkedList<Protokoll.VerkaufsEreignis> prot = Protokoll.getInstance().protokollListe;
-		while(!prot.isEmpty()){
+		while (!prot.isEmpty()) {
 			prot.removeFirst();
 		}
 		fordereWechselgeld();
 		Protokoll.getInstance().umsatz = 0;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		AutomatenSteuerung other = (AutomatenSteuerung) obj;
+		if (auswahl == null) {
+			if (other.auswahl != null)
+				return false;
+		} else if (!auswahl.equals(other.auswahl))
+			return false;
+		if (Float.floatToIntBits(geld) != Float.floatToIntBits(other.geld))
+			return false;
+		return true;
 	}
 }
