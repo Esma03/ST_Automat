@@ -2,12 +2,10 @@ package test;
 
 import static org.junit.Assert.*;
 
-import java.util.Date;
-
 import org.junit.Test;
 
 import automat.AutomatenSteuerung;
-import automat.Bezeichnung;
+import automat.Produkt;
 import automat.Protokoll;
 
 public class ZapfTest {
@@ -27,12 +25,12 @@ public class ZapfTest {
 	@Test
 	public void testBezahleBetrag() {
 		testAutomat.testKonfiguration();
-		testAutomat.waehleProdukt(Bezeichnung.KAKAO);
-		testAutomat.bezahleBetrag(Bezeichnung.KAKAO.getPreis());
+		testAutomat.waehleProdukt(Produkt.KAKAO);
+		testAutomat.bezahleBetrag(Produkt.KAKAO.getPreis());
 		testAutomat.zapfeProdukt();
-		assertEquals(Bezeichnung.KAKAO.getPreis(), testProtokoll.getUmsatz(), delta );
+		assertEquals(Produkt.KAKAO.getPreis(), testProtokoll.getUmsatz(), delta );
 		assertEquals("Kakao (1.0EURO)", cutDate(testAutomat.listeVerkäufe()[0]));
-		testAutomat.waehleProdukt(Bezeichnung.KAFFEE);
+		testAutomat.waehleProdukt(Produkt.KAFFEE);
 		testAutomat.bezahleBetrag(0.1f);
 		testAutomat.bezahleBetrag(0.2f);
 		testAutomat.bezahleBetrag(0.1f);
@@ -41,7 +39,7 @@ public class ZapfTest {
 		testAutomat.bezahleBetrag(0.2f);
 		testAutomat.zapfeProdukt();
 		System.out.println(testAutomat.listeVerkäufe()[1]);
-		float erwartet = Bezeichnung.KAFFEE.getPreis() + Bezeichnung.KAKAO.getPreis();
+		float erwartet = Produkt.KAFFEE.getPreis() + Produkt.KAKAO.getPreis();
 		assertEquals(erwartet, testProtokoll.getUmsatz(), delta);
 		assertEquals("Kaffe (1.2EURO)", cutDate(testAutomat.listeVerkäufe()[1]));
 	}
@@ -82,7 +80,8 @@ public class ZapfTest {
 
 	@Test
 	public void testAbbruch() {
-		fail("Not yet implemented");
+		testAutomat.waehleProdukt(Produkt.KAKAO);
+		testAutomat.waehleOption("");
 	}
 
 }

@@ -23,23 +23,13 @@ public class AutomatenSteuerung implements KaffeeAutomat {
 	}
 
 	@Override
-	public void waehleProdukt(Bezeichnung bez) {
-		switch (bez) {
-		case KAKAO:
-			auswahl = new Kakao();
-			break;
-		case KAFFEE:
-			auswahl = new Kaffee();
-			break;
-		case TEE:
-			auswahl = new Tee();
-			break;
-		}
+	public void waehleProdukt(Produkt bez) {
+		auswahl = bez;
 	}
 
 	@Override
 	public void waehleOption(String option) {
-		auswahl.optionen[0] = option;
+		auswahl.addOption(option);
 	}
 
 	@Override
@@ -51,10 +41,10 @@ public class AutomatenSteuerung implements KaffeeAutomat {
 
 	@Override
 	public float zapfeProdukt() {
-		if (auswahl.preis <= geld) {
+		if (auswahl.getPreis() <= geld) {
 			Protokoll p = Protokoll.getInstance();
 			p.notiere(auswahl);
-			geld = geld - auswahl.preis;
+			geld = geld - auswahl.getPreis();
 			geld = 0;
 			auswahl = null;
 		}

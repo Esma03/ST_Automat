@@ -10,7 +10,7 @@ public interface KaffeeAutomat {
 
 	float abbruch();
 
-	void waehleProdukt(Bezeichnung bez);
+	void waehleProdukt(Produkt bez);
 
 	void bezahleBetrag(float geld);
 }

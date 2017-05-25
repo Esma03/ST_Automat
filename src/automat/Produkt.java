@@ -1,44 +1,28 @@
 package automat;
 
-import java.util.Arrays;
+public enum Produkt {
+	KAFFEE(1.2f), TEE(1f), KAKAO(1f);
 
-public class Produkt {
+	private String[] optionen;
+	private final float preis;
 
-	@Override
-	public boolean equals(Object obj) {
-		if (this == obj) {
-			return true;
-		}
-		if (obj == null) {
-			return false;
-		}
-		if (!(obj instanceof Produkt)) {
-			return false;
-		}
-		Produkt other = (Produkt) obj;
-		if (bezeichnung == null) {
-			if (other.bezeichnung != null) {
-				return false;
-			}
-		} else if (!bezeichnung.equals(other.bezeichnung)) {
-			return false;
-		}
-		if (!Arrays.equals(optionen, other.optionen)) {
-			return false;
-		}
-		if (Float.floatToIntBits(preis) != Float.floatToIntBits(other.preis)) {
-			return false;
-		}
-		return true;
-	}
+	private Produkt(float preis) {
+        this.preis = preis;
+    }
 
-	String bezeichnung;
-	float preis;
-	String[] optionen;
+    public float getPreis() {
+        return preis;
+    }
 
-	public Produkt(String bezeichnung, float preis, String[] optionen) {
-		this.bezeichnung = bezeichnung;
-		this.preis = preis;
-		this.optionen = optionen;
-	}
+    public void addOption(String newOpt){
+    	String[] opt = new String[optionen.length + 1];
+    	for (int i = 0; i < optionen.length; i++) {
+			opt[i] = optionen[i];
+		}
+    	opt[optionen.length] = newOpt;
+    }
+
+    public String[] getOptionen(){
+    	return optionen.clone();
+    }
 }

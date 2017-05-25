@@ -20,9 +20,9 @@ public class Protokoll {
 
 	void notiere(Produkt prod){
 		VerkaufsEreignis ve = new VerkaufsEreignis();
-		ve.produktbezeichnung = prod.bezeichnung;
-		ve.Optionen = prod.optionen.clone();
-		ve.verkaufspreis = prod.preis;
+		ve.produktbezeichnung = prod.name();
+		ve.Optionen = prod.getOptionen();
+		ve.verkaufspreis = prod.getPreis();
 		ve.datum = new Date();
 		protokollListe.addLast(ve);
 		umsatz += ve.verkaufspreis;
