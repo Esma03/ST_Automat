@@ -12,5 +12,5 @@ public interface KaffeeAutomat {
 
 	void waehleProdukt(Bezeichnung bez);
 
-	void bezahleBetrag(int geld);
+	void bezahleBetrag(float geld);
 }

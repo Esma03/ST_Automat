@@ -5,12 +5,12 @@ import java.util.LinkedList;
 public class AutomatenSteuerung implements KaffeeAutomat {
 	static AutomatenSteuerung instance;
 	Produkt auswahl;
-	int geld;
+	float geld;
 
 	private AutomatenSteuerung() {
 	}
 
-	static AutomatenSteuerung getInstance() {
+	public static AutomatenSteuerung getInstance() {
 		if (instance == null) {
 			instance = new AutomatenSteuerung();
 		}
@@ -18,7 +18,7 @@ public class AutomatenSteuerung implements KaffeeAutomat {
 	}
 
 	@Override
-	public void bezahleBetrag(int geld) {
+	public void bezahleBetrag(float geld) {
 		this.geld += geld;
 	}
 
@@ -51,24 +51,28 @@ public class AutomatenSteuerung implements KaffeeAutomat {
 
 	@Override
 	public float zapfeProdukt() {
-		Protokoll p = Protokoll.getInstance();
-		p.notiere(auswahl);
-		float temp = geld;
-		geld = 0;
-		return temp;
+		if(auswahl.preis <= geld){
+			Protokoll p = Protokoll.getInstance();
+			p.notiere(auswahl);
+			geld = geld - auswahl.preis;
+			geld = 0;
+			auswahl = null;
+		}
+		return fordereWechselgeld();
 	}
 
 	float getUmsatz(){
 		return Protokoll.getInstance().umsatz;
 	}
 
-	String[] listeVerkäufe(){
+	public String[] listeVerkäufe(){
 		LinkedList<Protokoll.VerkaufsEreignis> prot = Protokoll.getInstance().protokollListe;
 		String[] s = new String[prot.size()];
 		for (Protokoll.VerkaufsEreignis vE : prot) {
-			int i = s.length;
-			s[i] = vE.produktbezeichnung + " (" + vE.verkaufspreis + "EURO) um: " + vE.datum;
+			int i = 0;
+			s[i++] = vE.produktbezeichnung + " (" + vE.verkaufspreis + "EURO) um: " + vE.datum;
 		}
+		System.out.println("Liste: " + s.length);
 		return s;
 	}
 
@@ -78,5 +82,14 @@ public class AutomatenSteuerung implements KaffeeAutomat {
 		float temp = geld;
 		geld = 0;
 		return temp;
+	}
+
+	public void testKonfiguration(){
+		LinkedList<Protokoll.VerkaufsEreignis> prot = Protokoll.getInstance().protokollListe;
+		while(!prot.isEmpty()){
+			prot.removeFirst();
+		}
+		fordereWechselgeld();
+		Protokoll.getInstance().umsatz = 0;
 	}
 }

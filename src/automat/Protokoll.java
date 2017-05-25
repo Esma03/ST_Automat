@@ -11,7 +11,7 @@ public class Protokoll {
 		protokollListe = new LinkedList<VerkaufsEreignis>();
 	}
 
-	static Protokoll getInstance(){
+	public static Protokoll getInstance(){
 		if(instance == null){
 			instance = new Protokoll();
 		}
@@ -33,5 +33,9 @@ public class Protokoll {
 		String[] Optionen;
 		Date datum;
 		float verkaufspreis;
+	}
+
+	public float getUmsatz() {
+		return umsatz;
 	}
 }
