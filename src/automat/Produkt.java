@@ -1,17 +1,17 @@
 package automat;
 
 public enum Produkt {
-	KAFFEE(1.2f), TEE(1f), KAKAO(1f);
+	KAFFEE(120), TEE(100), KAKAO(90);
 
-	private String[] optionen;
-	private final float preis;
+	private String[] optionen = new String[0];
+	private final int preis;
 
-	private Produkt(float preis) {
+	private Produkt(int preis) {
         this.preis = preis;
     }
 
-    public float getPreis() {
-        return preis;
+    public int getPreis() {
+        return preis + optionen.length * 10;
     }
 
     public void addOption(String newOpt){

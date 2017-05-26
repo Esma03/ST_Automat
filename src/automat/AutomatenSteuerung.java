@@ -5,7 +5,7 @@ import java.util.LinkedList;
 public class AutomatenSteuerung implements KaffeeAutomat {
 	static AutomatenSteuerung instance;
 	Produkt auswahl;
-	float geld;
+	int geld;
 
 	private AutomatenSteuerung() {
 	}
@@ -14,44 +14,68 @@ public class AutomatenSteuerung implements KaffeeAutomat {
 		if (instance == null) {
 			instance = new AutomatenSteuerung();
 		}
+		Status.start();
 		return instance;
 	}
 
 	@Override
-	public void bezahleBetrag(float geld) {
-		this.geld += geld;
+	public void bezahleBetrag(int geld) {
+			this.geld += geld;
 	}
 
 	@Override
 	public void waehleProdukt(Produkt bez) {
-		auswahl = bez;
+		if (Status.setState("Auswahl")) {
+			auswahl = bez;
+			Status.nextState();
+		}
 	}
 
 	@Override
 	public void waehleOption(String option) {
-		auswahl.addOption(option);
+		if (Status.setState("Optionen")) {
+			auswahl.addOption(option);
+			Status.nextState();
+		}
 	}
 
 	@Override
-	public float fordereWechselgeld() {
-		float temp = geld;
-		geld = 0;
-		return temp;
-	}
-
-	@Override
-	public float zapfeProdukt() {
-		if (auswahl.getPreis() <= geld) {
-			Protokoll p = Protokoll.getInstance();
-			p.notiere(auswahl);
-			geld = geld - auswahl.getPreis();
+	public int fordereWechselgeld() {
+		if (Status.setState("Abbruch")) {
+			int temp = geld;
 			geld = 0;
-			auswahl = null;
+			Status.nextState();
+			return temp;
+		}
+		return 0;
+	}
+
+	@Override
+	public int zapfeProdukt() {
+		if (Status.setState("Ausgabe")) {
+			if (auswahl == Produkt.KAKAO) {
+				if (auswahl.getOptionen().length == 0) {
+					System.out.println("keine Option ausgewählt. Aktion wird abgebrochen.");
+					return abbruch();
+				}
+			}
+			if (auswahl.getPreis() <= geld) {
+				Protokoll p = Protokoll.getInstance();
+				p.notiere(auswahl);
+				geld = geld - auswahl.getPreis();
+				System.out.print("AUSGABE: ");
+				for (String opt : auswahl.getOptionen()) {
+					System.out.print(opt + " ");
+				}
+				System.out.println(auswahl);
+				auswahl = null;
+			}
+			Status.nextState();
 		}
 		return fordereWechselgeld();
 	}
 
-	float getUmsatz() {
+	int getUmsatz() {
 		return Protokoll.getInstance().umsatz;
 	}
 
@@ -62,13 +86,14 @@ public class AutomatenSteuerung implements KaffeeAutomat {
 		for (Protokoll.VerkaufsEreignis vE : prot) {
 			s[i++] = vE.produktbezeichnung + " (" + vE.verkaufspreis + "EURO) um: " + vE.datum;
 		}
-		System.out.println("Liste: " + s.length);
 		return s;
 	}
 
 	@Override
-	public float abbruch() {
+	public int abbruch() {
+		Status.abbruch();
 		auswahl = null;
+		Status.start();
 		return fordereWechselgeld();
 	}
 
@@ -79,6 +104,7 @@ public class AutomatenSteuerung implements KaffeeAutomat {
 		}
 		fordereWechselgeld();
 		Protokoll.getInstance().umsatz = 0;
+		Status.start();
 	}
 
 	@Override

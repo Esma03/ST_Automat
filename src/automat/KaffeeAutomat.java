@@ -4,13 +4,13 @@ public interface KaffeeAutomat {
 
 	void waehleOption(String option);
 
-	float fordereWechselgeld();
+	int fordereWechselgeld();
 
-	float zapfeProdukt();
+	int zapfeProdukt();
 
-	float abbruch();
+	int abbruch();
 
 	void waehleProdukt(Produkt bez);
 
-	void bezahleBetrag(float geld);
+	void bezahleBetrag(int geld);
 }

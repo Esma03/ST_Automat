@@ -3,7 +3,7 @@ import java.util.Date;
 import java.util.LinkedList;
 
 public class Protokoll {
-	float umsatz;
+	int umsatz;
 	LinkedList<VerkaufsEreignis> protokollListe;
 	static Protokoll instance;
 
@@ -21,7 +21,9 @@ public class Protokoll {
 	void notiere(Produkt prod){
 		VerkaufsEreignis ve = new VerkaufsEreignis();
 		ve.produktbezeichnung = prod.name();
-		ve.Optionen = prod.getOptionen();
+		if (prod.getOptionen() != null){
+			ve.Optionen = prod.getOptionen();
+		}
 		ve.verkaufspreis = prod.getPreis();
 		ve.datum = new Date();
 		protokollListe.addLast(ve);
@@ -32,10 +34,10 @@ public class Protokoll {
 		String produktbezeichnung;
 		String[] Optionen;
 		Date datum;
-		float verkaufspreis;
+		int verkaufspreis;
 	}
 
-	public float getUmsatz() {
+	public int getUmsatz() {
 		return umsatz;
 	}
 }

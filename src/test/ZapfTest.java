@@ -25,23 +25,22 @@ public class ZapfTest {
 	@Test
 	public void testBezahleBetrag() {
 		testAutomat.testKonfiguration();
-		testAutomat.waehleProdukt(Produkt.KAKAO);
-		testAutomat.bezahleBetrag(Produkt.KAKAO.getPreis());
-		testAutomat.zapfeProdukt();
-		assertEquals(Produkt.KAKAO.getPreis(), testProtokoll.getUmsatz(), delta );
-		assertEquals("Kakao (1.0EURO)", cutDate(testAutomat.listeVerkäufe()[0]));
 		testAutomat.waehleProdukt(Produkt.KAFFEE);
-		testAutomat.bezahleBetrag(0.1f);
-		testAutomat.bezahleBetrag(0.2f);
-		testAutomat.bezahleBetrag(0.1f);
-		testAutomat.bezahleBetrag(0.2f);
-		testAutomat.bezahleBetrag(0.4f);
-		testAutomat.bezahleBetrag(0.2f);
+		testAutomat.bezahleBetrag(Produkt.KAFFEE.getPreis());
 		testAutomat.zapfeProdukt();
-		System.out.println(testAutomat.listeVerkäufe()[1]);
-		float erwartet = Produkt.KAFFEE.getPreis() + Produkt.KAKAO.getPreis();
+		assertEquals(Produkt.KAFFEE.getPreis(), testProtokoll.getUmsatz(), delta );
+		assertEquals("KAFFEE (120EURO)", cutDate(testAutomat.listeVerkäufe()[0]));
+		testAutomat.waehleProdukt(Produkt.KAFFEE);
+		testAutomat.bezahleBetrag(10);
+		testAutomat.bezahleBetrag(20);
+		testAutomat.bezahleBetrag(10);
+		testAutomat.bezahleBetrag(20);
+		testAutomat.bezahleBetrag(40);
+		testAutomat.bezahleBetrag(20);
+		testAutomat.zapfeProdukt();
+		int erwartet = Produkt.KAFFEE.getPreis() * 2;
 		assertEquals(erwartet, testProtokoll.getUmsatz(), delta);
-		assertEquals("Kaffe (1.2EURO)", cutDate(testAutomat.listeVerkäufe()[1]));
+		assertEquals("KAFFEE (120EURO)", cutDate(testAutomat.listeVerkäufe()[1]));
 	}
 
 	private String cutDate(String date){
@@ -60,12 +59,22 @@ public class ZapfTest {
 
 	@Test
 	public void testFordereWechselgeld() {
-		fail("Not yet implemented");
+		testAutomat.testKonfiguration();
+		testAutomat.waehleProdukt(Produkt.KAFFEE);
+		testAutomat.bezahleBetrag(Produkt.KAFFEE.getPreis() + 1000);
+		assertEquals(1000, testAutomat.zapfeProdukt(), delta);
 	}
 
 	@Test
-	public void testZapfeProdukt() {
-		fail("Not yet implemented");
+	public void testKeineOptionen(){
+		testAutomat.waehleProdukt(Produkt.KAKAO);
+		testAutomat.waehleOption("heißer");
+		testAutomat.bezahleBetrag(Produkt.KAKAO.getPreis() + 1000);
+		assertEquals(1000, testAutomat.zapfeProdukt(), delta);
+
+		testAutomat.waehleProdukt(Produkt.KAKAO);
+		testAutomat.bezahleBetrag(Produkt.KAKAO.getPreis() + 1000);
+		assertEquals(1000 + Produkt.KAKAO.getPreis(), testAutomat.zapfeProdukt(), delta);
 	}
 
 	@Test
@@ -80,8 +89,11 @@ public class ZapfTest {
 
 	@Test
 	public void testAbbruch() {
+		testBezahleBetrag();
 		testAutomat.waehleProdukt(Produkt.KAKAO);
-		testAutomat.waehleOption("");
+		testAutomat.waehleOption("heißer");
+		testAutomat.abbruch();
+		testBezahleBetrag();
 	}
 
 }
