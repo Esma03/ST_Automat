@@ -12,9 +12,12 @@ public class Status {
 		int i = getIndex(currentState);
 		int j = getIndex(state);
 
-		if (i <= j || j == 0) {
+		if ((i <= j && i > 2) || j == 0) {
 			return true;
 		} else {
+			if(j - i == 1){
+				return true;
+			}
 			return false;
 		}
 	}

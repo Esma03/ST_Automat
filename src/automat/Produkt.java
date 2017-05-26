@@ -7,22 +7,23 @@ public enum Produkt {
 	private final int preis;
 
 	private Produkt(int preis) {
-        this.preis = preis;
-    }
+		this.preis = preis;
+	}
 
-    public int getPreis() {
-        return preis + optionen.length * 10;
-    }
+	public int getPreis() {
+		return preis + optionen.length * 10;
+	}
 
-    public void addOption(String newOpt){
-    	String[] opt = new String[optionen.length + 1];
-    	for (int i = 0; i < optionen.length; i++) {
+	public void addOption(String newOpt) {
+		String[] opt = new String[optionen.length + 1];
+		for (int i = 0; i < optionen.length; i++) {
 			opt[i] = optionen[i];
 		}
-    	opt[optionen.length] = newOpt;
-    }
+		opt[optionen.length] = newOpt;
+		optionen = opt;
+	}
 
-    public String[] getOptionen(){
-    	return optionen.clone();
-    }
+	public String[] getOptionen() {
+		return optionen.clone();
+	}
 }

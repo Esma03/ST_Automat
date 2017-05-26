@@ -1,9 +1,7 @@
 package test;
 
 import static org.junit.Assert.*;
-
 import org.junit.Test;
-
 import automat.AutomatenSteuerung;
 import automat.Produkt;
 import automat.Protokoll;
@@ -16,10 +14,10 @@ public class ZapfTest {
 	@Test
 	public void testGetInstance() {
 		AutomatenSteuerung testAutomat = AutomatenSteuerung.getInstance();
-		assertEquals(testAutomat,AutomatenSteuerung.getInstance());
+		assertEquals(testAutomat, AutomatenSteuerung.getInstance());
 
 		Protokoll testProtokoll = Protokoll.getInstance();
-		assertEquals(testProtokoll,Protokoll.getInstance());
+		assertEquals(testProtokoll, Protokoll.getInstance());
 	}
 
 	@Test
@@ -28,7 +26,7 @@ public class ZapfTest {
 		testAutomat.waehleProdukt(Produkt.KAFFEE);
 		testAutomat.bezahleBetrag(Produkt.KAFFEE.getPreis());
 		testAutomat.zapfeProdukt();
-		assertEquals(Produkt.KAFFEE.getPreis(), testProtokoll.getUmsatz(), delta );
+		assertEquals(Produkt.KAFFEE.getPreis(), testProtokoll.getUmsatz(), delta);
 		assertEquals("KAFFEE (120EURO)", cutDate(testAutomat.listeVerkäufe()[0]));
 		testAutomat.waehleProdukt(Produkt.KAFFEE);
 		testAutomat.bezahleBetrag(10);
@@ -43,18 +41,32 @@ public class ZapfTest {
 		assertEquals("KAFFEE (120EURO)", cutDate(testAutomat.listeVerkäufe()[1]));
 	}
 
-	private String cutDate(String date){
+	private String cutDate(String date) {
 		return date.substring(0, date.indexOf(':') - 3);
 	}
 
 	@Test
 	public void testWaehleProdukt() {
-		fail("Not yet implemented");
+		testAutomat.testKonfiguration();
+		testAutomat.waehleOption("kalter");
+		testAutomat.waehleProdukt(Produkt.KAKAO);
+		testAutomat.bezahleBetrag(1000);
+		assertEquals(1000, testAutomat.zapfeProdukt(), delta);	//fails
 	}
 
 	@Test
 	public void testWaehleOption() {
-		fail("Not yet implemented");
+		testAutomat.testKonfiguration();
+		testAutomat.waehleProdukt(Produkt.KAFFEE);
+		testAutomat.waehleOption("kalter");
+		testAutomat.bezahleBetrag(1000);
+		testAutomat.zapfeProdukt();
+		assertEquals(1000, testAutomat.zapfeProdukt(), delta); //fails
+
+		testAutomat.waehleProdukt(Produkt.KAFFEE);
+		testAutomat.waehleOption("streuseliger");
+		testAutomat.bezahleBetrag(120);
+		assertEquals(120, testAutomat.zapfeProdukt(), delta);
 	}
 
 	@Test
@@ -66,7 +78,7 @@ public class ZapfTest {
 	}
 
 	@Test
-	public void testKeineOptionen(){
+	public void testKeineOptionen() {
 		testAutomat.waehleProdukt(Produkt.KAKAO);
 		testAutomat.waehleOption("heißer");
 		testAutomat.bezahleBetrag(Produkt.KAKAO.getPreis() + 1000);
@@ -74,17 +86,7 @@ public class ZapfTest {
 
 		testAutomat.waehleProdukt(Produkt.KAKAO);
 		testAutomat.bezahleBetrag(Produkt.KAKAO.getPreis() + 1000);
-		assertEquals(1000 + Produkt.KAKAO.getPreis(), testAutomat.zapfeProdukt(), delta);
-	}
-
-	@Test
-	public void testGetUmsatz() {
-		fail("Not yet implemented");
-	}
-
-	@Test
-	public void testListeVerkäufe() {
-		fail("Not yet implemented");
+		assertEquals(1000 + Produkt.KAKAO.getPreis(), testAutomat.zapfeProdukt(), delta); //fails
 	}
 
 	@Test
